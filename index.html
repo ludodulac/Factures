@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#32235f">
+<meta name="description" content="Préparez et exportez vos factures en PDF, sur votre téléphone.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mes factures">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><title>Mes factures — Ludovic</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f5f3fb;color:#251f3a;color-scheme:light}
+*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}
+header{background:linear-gradient(130deg,#271b4b,#6448b8);padding:25px 17px 40px;color:white}
+.wrap{max-width:930px;margin:auto}.brand{display:flex;gap:10px;align-items:center;font-size:15px;font-weight:800;letter-spacing:.1px}.brand b{background:#ffffff27;padding:10px 12px;border-radius:12px;font-size:23px}
+header h1{font-size:clamp(27px,5vw,38px);line-height:1.12;letter-spacing:-1.3px;margin:22px 0 12px}
+header p{max-width:620px;line-height:1.6;font-size:14px;color:#eee5ff;margin:0}
+main{max-width:930px;margin:-22px auto 80px;padding:0 14px}
+section{background:#fff;border-radius:20px;padding:19px;margin-bottom:15px;box-shadow:0 8px 30px #2c20420e;border:1px solid #e9e6f2}
+section h2{font-size:17px;letter-spacing:-.4px;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.full{grid-column:1/-1}
+label{display:block;font-weight:700;font-size:12px;color:#615a71;margin:0 0 6px}
+input,textarea{width:100%;min-width:0;padding:12px;border:1px solid #ddd9e9;border-radius:10px;background:#fcfbff;color:#27213f;outline:none}
+input:focus,textarea:focus{border-color:#7d59d8;box-shadow:0 0 0 3px #9f84ec36}
+textarea{min-height:72px;resize:vertical}.primary-input{background:#f7f2ff;font-weight:750;border-color:#d7cafa}
+.help{font-size:12px;line-height:1.5;color:#81798e;margin:11px 0 0}.sub{font-size:13px;line-height:1.55;color:#655c74}
+details{border-top:1px solid #eae7f0;padding-top:11px;padding-bottom:11px}
+summary{cursor:pointer;color:#55408d;font-size:14px;font-weight:750;list-style-position:inside}
+details .grid{margin-top:15px}.reminder{padding:11px 13px;background:#fff8e7;border-radius:10px;font-size:12px;line-height:1.45;color:#705c2c;margin-top:12px}
+.actions{display:flex;gap:9px;margin:12px 0;position:sticky;bottom:0;padding:13px 2px;background:#f5f3fbd9;z-index:4;backdrop-filter:blur(8px)}
+.btn{border:0;border-radius:12px;font-size:14px;font-weight:800;padding:15px;min-height:51px}
+.btn-main{flex:1;color:#fff;background:#6243cb;box-shadow:0 6px 18px #5a3bb52b}
+.btn-light{background:#fff;color:#503a8b;border:1px solid #dbd3ec}
+button:active{transform:scale(.99)}
+.note{padding:10px 12px;border-radius:11px;background:#f1ecff;color:#554082;margin:12px 0;font-size:12px;line-height:1.5}
+.hide{display:none}.layout{display:block}
+.preview{color:#25212a;background:#fff;border:1px solid #e2e0e3;box-shadow:0 3px 20px #00000006;min-height:490px;padding:24px 18px;font-family:Arial,sans-serif;font-size:10px;border-radius:7px}
+.preview .ph{display:grid;grid-template-columns:1fr 1fr;gap:20px}.preview .card{background:#f9f8f4;border:1px solid #c9c2b7;border-radius:7px;padding:10px 9px;min-height:96px;overflow-wrap:anywhere}
+.preview small{font-size:9px;color:#7e776e}.preview strong{display:block;font-size:11px;margin:8px 0 6px}.preview .white{white-space:pre-line}
+.preview .title{border-top:1px solid #d3cdc3;margin:25px 0 0;padding-top:15px;font-size:14px;font-weight:800}
+.preview .tbl{margin-top:22px}.preview .th,.preview .tr{display:grid;grid-template-columns:48% 10% 21% 21%;align-items:start}
+.preview .th{background:#191919;color:white;font-size:8px;font-weight:bold}
+.preview .th>div,.preview .tr>div{padding:8px 5px;overflow-wrap:anywhere}
+.preview .tr{border:1px solid #ddd7cd;min-height:32px}.preview .tr>div:nth-child(n+3){text-align:right}
+.preview .vat{text-align:right;color:#777;font-style:italic;margin:10px 0}
+.preview .total{background:#191919;color:#fff;padding:10px 12px;width:55%;margin-left:auto;display:flex;justify-content:space-between;font-weight:bold}
+.preview .terms{border-top:1px solid #d3cdc3;margin-top:35px;padding-top:13px}
+.preview .bank{margin-top:23px;border:1px solid #d1c9bc;background:#f9f8f4;border-radius:7px;padding:13px;overflow-wrap:anywhere}
+.preview .bankGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.preview .footer{text-align:center;color:#aaa;margin-top:65px;font-size:9px}
+.toast{position:fixed;left:15px;right:15px;bottom:88px;background:#2d2548;color:white;padding:14px;border-radius:12px;z-index:5;font-size:13px;box-shadow:0 10px 30px #0003;opacity:0;transform:translateY(12px);pointer-events:none;transition:.23s}
+.toast.visible{opacity:1;transform:none}
+@media(min-width:750px){header{padding:30px 25px 50px}main{padding:0 20px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:17px;align-items:start}.preview{padding:33px 27px}.preview .ph{gap:26px}section{padding:24px}}
+@media(max-width:365px){.grid{grid-template-columns:1fr}.full{grid-column:1}.preview{padding:14px 8px}.actions .btn{padding:11px 9px;font-size:12px}}
+@media print{body{background:white}header,.no-print,.actions,.toast,section:not(.invoice-section){display:none!important}main{margin:0;padding:0;max-width:none}section.invoice-section{box-shadow:none;border:0;padding:0;margin:0}.preview{min-height:270mm;border:0;padding:6mm 8mm;font-size:10pt}.preview .title{margin-top:35mm}.preview .tbl{margin-top:20mm}.preview .ph{gap:40px}.preview .card{min-height:30mm}.preview .terms{margin-top:30mm}.preview .bank{margin-top:24mm}.preview .footer{margin-top:38mm}@page{size:A4;margin:9mm}}
+</style></head><body>
+<header><div class="wrap"><div class="brand"><b>▤</b> MES FACTURES</div><h1>Une date. Un PDF.<br>Et c'est prêt.</h1><p>Modifie la date, retrouve ton modèle de facture et télécharge un PDF que tu peux envoyer par mail.</p></div></header>
+<main><section class="no-print"><h2>📅 Nouvelle facture</h2><div class="grid">
+<div><label for="date">Date de la facture</label><input type="date" id="date" class="primary-input"></div>
+<div><label for="number">Numéro automatique</label><input id="number" class="primary-input" inputmode="numeric"></div>
+<div class="full"><label for="description">Désignation</label><textarea id="description"></textarea></div>
+<div><label for="qty">Quantité</label><input type="number" id="qty" min=".01" step=".01" inputmode="decimal"></div>
+<div><label for="price">Prix unitaire (€)</label><input type="number" id="price" step=".01" inputmode="decimal"></div></div>
+<p class="help">08/11/2027 → numéro 08112027, modifiable. Utilise un numéro unique pour chaque facture.</p></section>
+<div class="layout"><div><section class="no-print">
+<h2>✏️ Mes informations enregistrées</h2><p class="sub">Tu ne les remplis qu'une seule fois. Elles restent sur ce téléphone et ne sont pas publiées sur GitHub.</p>
+<details><summary>Vendeur</summary><div class="grid">
+<div class="full"><label for="seller">Nom</label><input id="seller"></div>
+<div class="full"><label for="sellerAddress">Adresse</label><textarea id="sellerAddress"></textarea></div>
+<div><label for="siren">SIREN / identifiant</label><input id="siren"></div>
+<div><label for="status">Statut</label><input id="status"></div></div>
+<div class="reminder">⚠️ Sur la facture d'origine, le numéro indiqué comme « SIREN » comporte 12 chiffres. Vérifie ton numéro officiel avant d'émettre une facture.</div>
+</details>
+<details><summary>Client</summary><div class="grid"><div class="full"><label for="client">Nom du client</label><input id="client"></div><div class="full"><label for="clientAddress">Adresse du client</label><textarea id="clientAddress"></textarea></div></div></details>
+<details><summary>Règlement et coordonnées bancaires</summary><div class="grid">
+<div class="full"><label for="vat">Mention TVA</label><input id="vat"></div>
+<div class="full"><label for="terms">Délai de paiement</label><input id="terms"></div>
+<div class="full"><label for="holder">Titulaire</label><input id="holder"></div>
+<div class="full"><label for="bank">Banque</label><input id="bank"></div>
+<div class="full"><label for="iban">IBAN</label><input id="iban"></div>
+<div class="full"><label for="bic">BIC</label><input id="bic"></div>
+</div></details>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:13px">
+<button type="button" class="btn btn-light" id="backup">💾 Sauvegarder</button>
+<button type="button" class="btn btn-light" id="restore">↥ Importer mes données</button>
+<input type="file" id="restoreFile" class="hide" accept=".json,application/json"></div>
+<div class="note">🔒 Ces informations sont sauvegardées uniquement dans le navigateur de ce téléphone. Garde une sauvegarde : effacer les données du navigateur effacera aussi tes réglages.</div>
+</section></div>
+<section class="invoice-section"><h2 class="no-print">👀 Aperçu de ma facture</h2><div class="preview">
+<div class="ph"><div class="card"><small>IDENTIFICATION DU VENDEUR</small><strong id="pSeller"></strong><div class="white" id="pSellerAddress"></div><p>SIREN : <span id="pSiren"></span><br>STATUT <span id="pStatus"></span></p></div>
+<div class="card"><small>CLIENT</small><strong id="pClient"></strong><div class="white" id="pClientAddress"></div></div></div>
+<div class="title">FACTURE N° <span id="pNumber"></span></div><p>Date : <span id="pDate"></span></p>
+<div class="tbl"><div class="th"><div>DÉSIGNATION</div><div>QTÉ</div><div>PRIX UNIT.</div><div>TOTAL</div></div>
+<div class="tr"><div id="pDescription"></div><div id="pQty"></div><div id="pPrice"></div><div id="pAmount"></div></div>
+<div class="vat" id="pVat"></div><div class="total"><span>TOTAL</span><span id="pTotal"></span></div></div>
+<div class="terms"><b>Modalités de paiement</b><p id="pTerms"></p></div>
+<div class="bank"><small>COORDONNÉES BANCAIRES</small><div class="bankGrid"><div>Titulaire : <span id="pHolder"></span></div><div>Banque : <span id="pBank"></span></div><div>IBAN : <span id="pIban"></span></div><div>BIC : <span id="pBic"></span></div></div></div>
+<div class="footer" id="pFooter"></div>
+</div><p class="help no-print">Format PDF A4. Prêt à conserver ou à joindre à un e-mail.</p></section></div>
+<div class="actions no-print"><button class="btn btn-main" id="pdf" type="button">⬇ Créer mon PDF</button><button class="btn btn-light" id="share" type="button">↗ Partager</button></div>
+</main><div class="toast" id="toast" aria-live="polite"></div>
+<script>
+(function(){'use strict';
+var key='factures_ludo_v2',ids=['date','number','description','qty','price','seller','sellerAddress','siren','status','client','clientAddress','vat','terms','holder','bank','iban','bic'];
+var defaults={date:'',number:'',description:'Illustration conte juin 2026 + conte rendu espace jeunesse',qty:'1',price:'150',seller:'',sellerAddress:'',siren:'',status:'E I',client:'Ecole Essénienne',clientAddress:'Bourg-dessous 31\n1088 Ropraz / Suisse',vat:'non soumis à la TVA',terms:'30 jours net',holder:'',bank:'',iban:'',bic:''};
+var v={},t=0,timer;
+function $(id){return document.getElementById(id)}
+function today(){var d=new Date(),n=function(x){return String(x).padStart(2,'0')};return d.getFullYear()+'-'+n(d.getMonth()+1)+'-'+n(d.getDate())}
+function num(d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d||''))return '';return d.slice(8)+d.slice(5,7)+d.slice(0,4)}
+function dateFr(d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d||''))return '';return d.slice(8)+'/'+d.slice(5,7)+'/'+d.slice(0,4)}
+function money(n){return(Number.isFinite(n)?n:0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function notify(s){var box=$('toast');box.textContent=s;box.classList.add('visible');clearTimeout(timer);timer=setTimeout(function(){box.classList.remove('visible')},4700)}
+function update(){ids.forEach(function(k){v[k]=$(k).value});t=(Number(v.price)||0)*(Number(v.qty)||0);ids.forEach(function(k){var target=$('p'+k[0].toUpperCase()+k.slice(1));if(target)target.textContent=v[k]});$('pDate').textContent=dateFr(v.date);$('pPrice').textContent=money(Number(v.price)||0);$('pAmount').textContent=money(t);$('pTotal').textContent=money(t)+' EUR';$('pFooter').textContent=v.seller+' — '+v.sellerAddress.replace(/\n/g,', ');try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}}
+function apply(data){v=Object.assign({},defaults,data||{});if(!v.date)v.date=today();if(!v.number)v.number=num(v.date);ids.forEach(function(k){$(k).value=v[k]||''});update()}
+function fromHash(){var m=location.hash.match(/^#configuration=([A-Za-z0-9_-]+)$/);if(!m)return null;try{var s=m[1].replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var json=decodeURIComponent(escape(atob(s)));var obj=JSON.parse(json);history.replaceState(null,'',location.pathname+location.search);return obj}catch(e){notify('Lien de configuration non reconnu.');return null}}
+var saved=null;try{saved=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}
+var preset=fromHash();apply(preset||saved||defaults);if(preset)notify('✓ Tes informations personnelles ont été enregistrées sur ton téléphone.');
+$('date').addEventListener('change',function(){$('number').value=num($('date').value);update()});
+ids.forEach(function(k){$(k).addEventListener('input',update)});
+function safe(){if(!v.date||!v.number||!v.description.trim()||!v.seller.trim()||!v.client.trim()){notify('Complète la date, le numéro, la prestation, le vendeur et le client.');return false}if(t<0){notify('Le total ne peut pas être négatif.');return false}return true}
+function latin1(s){var chars={'€':128,'’':146,'‘':145,'“':147,'”':148,'–':150,'—':151,'œ':156,'Œ':140,'…':133,'\u00a0':32};var out='';for(var ch of String(s||'')){var code=chars[ch]!==undefined?chars[ch]:ch.codePointAt(0);out+=String.fromCharCode(code<=255?code:63)}return out}
+function esc(s){return latin1(s).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')}
+function toBytes(s){var arr=new Uint8Array(s.length);for(var i=0;i<s.length;i++)arr[i]=s.charCodeAt(i)&255;return arr}
+function makePdf(){
+var cmds=[],h=842;
+function c(rgb,stroke){cmds.push(rgb.join(' ')+(stroke?' RG':' rg'))}
+function rect(x,y,w,ht,fill,edge){if(fill)c(fill,false);if(edge)c(edge,true);cmds.push(x+' '+(h-y-ht)+' '+w+' '+ht+' re '+(fill&&edge?'B':fill?'f':'S'))}
+function line(x1,y1,x2,y2,edge){c(edge,true);cmds.push(x1+' '+(h-y1)+' m '+x2+' '+(h-y2)+' l S')}
+function txt(s,x,y,size,bold,rgb){c(rgb,false);cmds.push('BT /'+(bold?'F2':'F1')+' '+size+' Tf 1 0 0 1 '+x+' '+(h-y-size)+' Tm ('+esc(s)+') Tj ET')}
+function wrap(str,max){var result=[];String(str||'').split(/\n/).forEach(function(par){var words=par.split(/\s+/),s='';words.forEach(function(w){if(!w)return;if((s+' '+w).trim().length>max&&s){result.push(s);s=w}else s=(s+' '+w).trim()});result.push(s)});return result}
+function lines(s,x,y,size,gap,max,count,color,bold){wrap(s,max).slice(0,count).forEach(function(row,i){txt(row,x,y+i*gap,size,bold||false,color)})}
+var black=[.1,.1,.1],brown=[.49,.46,.42],cream=[.975,.969,.955],border=[.79,.76,.72],white=[1,1,1];
+rect(50,42,231,106,cream,border);txt('IDENTIFICATION DU VENDEUR',61,54,8,false,brown);txt(v.seller,61,76,9,true,black);lines(v.sellerAddress,61,94,9,13,39,2,black);
+txt('SIREN : '+v.siren+'  STATUT '+v.status,61,125,7,false,black);
+rect(330,91,215,91,cream,border);txt('CLIENT',341,103,8,false,brown);txt(v.client,341,123,9,true,black);lines(v.clientAddress,341,141,9,13,39,2,black);
+line(50,190,545,190,border);txt('FACTURE N° '+v.number,50,203,15,true,black);txt('Date : '+dateFr(v.date),50,229,9,false,brown);
+rect(50,267,495,23,black,null);txt('DÉSIGNATION',58,272,8,true,white);txt('QTÉ',298,272,8,true,white);txt('PRIX UNIT. (EUR)',364,272,7,true,white);txt('TOTAL (EUR)',487,272,7,true,white);
+var rowH=Math.max(30,wrap(v.description,52).length*13+12);rect(50,290,495,rowH,null,border);
+lines(v.description,58,298,9,13,52,5,black);txt(v.qty,298,299,9,false,black);txt(money(Number(v.price)||0),407,299,9,false,black);txt(money(t),504,299,9,false,black);
+var bottom=290+rowH;txt(v.vat,382,bottom+5,8,false,brown);rect(335,bottom+22,210,26,black,null);txt('TOTAL',347,bottom+29,9,true,white);txt(money(t)+' EUR',465,bottom+29,9,true,white);
+var paymentY=Math.max(395,bottom+75);line(50,paymentY,545,paymentY,border);txt('Modalités de paiement',50,paymentY+13,9,true,black);txt(v.terms,50,paymentY+30,9,false,brown);
+var bankY=paymentY+65;rect(50,bankY,495,76,cream,border);txt('COORDONNÉES BANCAIRES',61,bankY+8,8,false,brown);
+txt('Titulaire : '+v.holder,61,bankY+28,8,false,black);txt('Banque : '+v.bank,310,bankY+28,8,false,black);
+txt('IBAN : '+v.iban,61,bankY+47,8,false,black);txt('BIC : '+v.bic,365,bankY+47,8,false,black);
+txt(v.seller+' — '+v.sellerAddress.replace(/\n/g,', '),111,808,7,false,brown);
+var stream=cmds.join('\n')+'\n',objects=[];
+objects.push('<< /Type /Catalog /Pages 2 0 R >>');
+objects.push('<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+objects.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>');
+objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+objects.push('<< /Length '+toBytes(stream).length+' >>\nstream\n'+stream+'endstream');
+var data='%PDF-1.4\n%\xE2\xE3\xCF\xD3\n',offsets=[0];
+objects.forEach(function(o,i){offsets.push(toBytes(data).length);data+=(i+1)+' 0 obj\n'+o+'\nendobj\n'});
+var cross=toBytes(data).length;data+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n';
+for(var j=1;j<offsets.length;j++)data+=String(offsets[j]).padStart(10,'0')+' 00000 n \n';
+data+='trailer\n<< /Size '+(objects.length+1)+' /Root 1 0 R >>\nstartxref\n'+cross+'\n%%EOF';
+return new Blob([toBytes(data)],{type:'application/pdf'})
+}
+function filename(){return 'Facture_'+v.number.replace(/[^A-Za-z0-9_-]/g,'_')+'.pdf'}
+function save(blob,file){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file||filename();document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},90000)}
+$('pdf').onclick=function(){if(!safe())return;try{save(makePdf());notify('PDF créé ! Retrouve-le dans les téléchargements.')}catch(e){notify('Une erreur a empêché la création du PDF.')}};
+$('share').onclick=async function(){if(!safe())return;var blob=makePdf(),file=new File([blob],filename(),{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Facture '+v.number});return}catch(e){if(e.name==='AbortError')return}}save(blob);notify('PDF enregistré : tu peux le joindre à ton e-mail.')};
+$('backup').onclick=function(){save(new Blob([JSON.stringify(v,null,2)],{type:'application/json'}),'sauvegarde-mes-factures.json');notify('Sauvegarde créée. Conserve ce fichier en lieu sûr.')};
+$('restore').onclick=function(){$('restoreFile').click()};
+$('restoreFile').onchange=function(){var file=this.files[0];if(!file)return;var fr=new FileReader();fr.onload=function(){try{var data=JSON.parse(fr.result);if(!data||typeof data!=='object'||!('seller' in data))throw Error();apply(data);notify('✓ Toutes tes informations ont été importées et sauvegardées sur cet appareil.')}catch(e){notify('Cette sauvegarde ne semble pas compatible.')}};fr.readAsText(file);this.value=''};
+if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})}
+})();
+</script></body></html>
