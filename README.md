@@ -11,9 +11,9 @@ Application statique et personnelle pour créer des factures PDF depuis un tél�
 
 ## Publication GitHub Pages
 
-Settings → Pages → Build and deployment → Source = **GitHub Actions**.
+Settings → Pages → Build and deployment → Source = **Deploy from a branch**.
 
-Le workflow `.github/workflows/pages.yml` publie le site lors d'un push sur `main`.
+Sélectionnez **main** et le dossier **/(root)**, puis Save. Le site sera alors publié automatiquement.
 
 Adresse prévue : https://ludodulac.github.io/Factures/
 
